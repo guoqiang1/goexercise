@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"github.com/nsqio/go-nsq"
+		"github.com/nsqio/go-nsq"
 	"github.com/pquerna/ffjson/ffjson"
 	"log"
 	"strconv"
-	"utils/comm"
-	"utils/php"
+	"gqutils"
 )
 
 func getProducer(address string) nsq.Producer {
@@ -22,7 +20,6 @@ func getProducer(address string) nsq.Producer {
 
 func main() {
 	pro := getProducer("127.0.0.1:4150")
-	fmt.Println(pro)
 
 	var s1 string
 	var msg string
@@ -30,13 +27,13 @@ func main() {
 	msgmap := make(map[string]interface{})
 
 	for i := 0; i < 20; i++ {
-		n1 := php.PHPrand(1000000, 9999999)
+		n1 := gqutils.RandomInt(1000000, 9999999)
 
 		s1 = strconv.Itoa(n1)
 
-		msgmap["time"] = comm.NowTime()
+		msgmap["time"] = gqutils.NowTime()
 
-		msg = "hello world good morning " + s1
+		msg = "hello world ! good morning " + s1
 
 		msgmap["msg"] = msg
 
@@ -44,7 +41,7 @@ func main() {
 		resultstr := string(result)
 
 		re := pro.Publish("test", []byte(resultstr))
-		fmt.Println(re)
+		log.Println(re)
 		log.Println(msgmap)
 	}
 
